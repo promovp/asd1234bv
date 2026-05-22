@@ -2013,11 +2013,13 @@ async def main():
                                     f"---\n\n"
                                     f"{report_content[:8000]}"
                                 )
-                                # 钉钉消息上限约20000字，截断处理
-                                if len(summary) > 18000:
-                                    summary = summary[:18000] + "\n\n...（内容过长，已截断，完整报告请查看Artifact）"
-                                await notifier.send_text_alert(summary)
-                                console.print("[bold green][DingTalk] 完整漏洞报告已推送[/bold green]")
+                                if len(report.invalid_vulns_filtered) != vuln_count and vuln_count != 0:
+                                    console.print("[bold yellow]无有效漏洞")
+                                    # 钉钉消息上限约20000字，截断处理
+                                    if len(summary) > 18000:
+                                        summary = summary[:18000] + "\n\n...（内容过长，已截断，完整报告请查看Artifact）"
+                                    await notifier.send_text_alert(summary)
+                                    console.print("[bold green][DingTalk] 完整漏洞报告已推送[/bold green]")
                     except Exception as e:
                         console.print(f"[yellow][DingTalk] 报告推送失败: {e}[/yellow]")
         except Exception as e:
